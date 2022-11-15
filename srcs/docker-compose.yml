@@ -1,5 +1,7 @@
 version '1.26'
 #https://www.howtoforge.de/anleitung/dockerisierung-von-wordpress-mit-nginx-und-php-fpm-auf-ubuntu-1604/
+
+#GIT Branches: https://www.atlassian.com/git/tutorials/using-branches/git-checkout
 services:
 
 	nginx:
