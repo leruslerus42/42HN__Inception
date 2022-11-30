@@ -1,44 +1,27 @@
-FROM debian
+FROM debian:buster
 
-run apk update && apk add --update-cache \
-	mariadb-client \
-	php				\
-	php-bz2			\
-	php-json		\
-	php-mysqli		\
-	php-pdo_mysql	\
-	php-fpm			\
-	php-dom 		\
-	php-exif		\
-	php-fileinfo	\
-	php-mbstring	\
-	php-openssl		\
-	php-xml			\
-	php-zip			\
-	php-ftp			\
-	php-opcache		\
-	php-curl		\
-	php-cgi 		\
-	php-session		\
-	php-phar		\
-	php-iconv		\
-	php-gd
 
-RUN apk add tzdata
-RUN apk add bash
-RUN adduser -D -g 'Nginx www user' -h /home/www www
+RUN apt-get update && apt-get upgrade && \
+	apt-get install -y php7.3-fpm \
+    php7.3-mysqli \
+    mariadb-client \
+    curl && \
+	apt-get update -y
 
-COPY --chown=www:www ./tools/setup.sh /setup.sh
-COPY --chown=www:www conf/www.conf /etc/php8/php-fpm.d/www.conf
-COPY --chown=www:www conf/php.ini /etc/php8/php.ini
+RUN mkdir -p /var/www/wordpress
+WORKDIR /var/www/wordpress
 
-#configure php
-RUN mkdir -p /run/php
-RUN touch /run/php/php8.0-fpm.pid
+RUN curl -O  https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN chmod +x wp-cli.phar 
+RUN	mv wp-cli.phar /usr/local/bin/wp
 
-#install wordpress
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN cp wp-cli.phar /usr/bin/wp
+COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d
+COPY ./conf/wp-config.php /var/www/wordpress/
 
-CMD ["bin/bash", "setup.sh"]
+COPY ./tools/script.sh /usr/local/bin
+
+RUN chmod +x /usr/local/bin/script.sh
+
+EXPOSE 9000
+
+ENTRYPOINT [ "/usr/local/bin/script.sh" ]

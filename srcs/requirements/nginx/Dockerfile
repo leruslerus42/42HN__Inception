@@ -1,15 +1,15 @@
-#Docker image will now be based on the Debian Buster Image
-FROM debian
+FROM debian:buster
 
-#Telling Docker to install the nginx package from the official package repo
-run apt-get -y update && apt-get -y install nginx
+RUN apt-get update && apt-get upgrade && apt-get install -y nginx openssl php-fpm
 
-#Now every time we build our Docker image, Docker copies the config file to the target dir
-COPY ./conf/nginx.conf /etc/nginx/site-available/default
+RUN openssl req -newkey rsa:2048 \
+                -x509  \
+                -nodes \
+                -days 365 \ 
+                -keyout /etc/ssl/private/nginx-selfsigned.key \             
+                -out /etc/ssl/certs/nginx-selfsigned.crt    \
+                -subj "/CN=rrajaobe.42.fr" 
 
-EXPOSE 80/tcp
+COPY ./conf/nginx.conf /etc/nginx/sites-available/default/.
 
-#Run Nginx whenever Docker img launches:
-#-g -> specifices a directive to nginx
-#daemon off -> dir will be disable the self-daemonizing behaviour of nginx
 CMD ["nginx", "-g", "daemon off;"]

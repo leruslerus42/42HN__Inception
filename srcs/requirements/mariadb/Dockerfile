@@ -1,14 +1,14 @@
-FROM debian
+FROM debian:buster
 
-run apt-get update
-run apt-get install -y mariadb-server
+
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y mariadb-server
+
+COPY ./tools/create_db_user.sh /
+
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
 EXPOSE 3306
 
-LABEL version="1.0"
-LABEL description="MariaDB Server"
-
-HEALTHCHECK --start-period=5m \
-	CMD mariadb -e 'SELECT @@datadir;' || exit 1
-
-CMD ["mysqld"]
+ ENTRYPOINT [ "./create_db_user.sh" ]

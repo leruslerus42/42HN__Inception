@@ -1,46 +1,63 @@
-version '1.26'
-#https://www.howtoforge.de/anleitung/dockerisierung-von-wordpress-mit-nginx-und-php-fpm-auf-ubuntu-1604/
+version: "3"
+
+# Services
 services:
+  # MySQL Service
+  mariadb:
+    container_name: mariadb
+    build: 
+      context: ./requirements/mariadb
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    env_file: .env
+    restart: always
+    networks:
+      - inception
 
-	nginx:
-			image: nginx:latest
-			ports:
-					- '80:80'
-			volumes:
-					- ./nginx:/etc/nginx/conf.d
-					- ./logs/nginx:/var/log/nginx
-					- ./wordpress:/var/www/html
-			links:
-					- wordpress
-			restart:
-					- always
+  #WORDPRESS
+  wordpress:
+    depends_on:
+       - mariadb
+    container_name: wordpress
+    build: 
+      context: ./requirements/wordpress
+    volumes:
+      - wordpress-data:/var/www/wordpress
+    env_file: .env
+    image: wordpress
+    networks:
+      - inception
+    restart: always
+  #NGINX WEBSERVER
+  nginx:
+    depends_on:
+      - wordpress
+    container_name: nginx
+    build: 
+      context: ./requirements/nginx
+    ports:
+      - "443:443"
+    networks:
+      - inception
+    restart: always
+    volumes:
+      - wordpress-data:/var/www/wordpress
 
+#Volumes
+volumes:
+  mariadb-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/rrajaobe/data/mariadb
+  wordpress-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/rrajaobe/data/wordpress
 
-		mysql:
-				image: mariadb
-				ports:
-						- '3306:3306'
-				volumes:
-						- ./db-data:/var/lib/mysql
-				environment:
-						- MYSQL_ROOT_PASSWORD=12345
-				restart: always
-
-		wordpress:
-				image: wordpress:4.7.1-php7.0-fpm
-				ports:
-						- '9000:9000'
-				volumes:
-						- ./wordpress:/var/www/html
-				environment:
-						- WORDPRESS_DB_NAME=wpdb
-						- WORDPRESS_TABLE_PREFIX=wp_
-						- WORDPRESS_DB_HOST=mysql
-						- WORDPRESS_DB_PASSWORD=12345
-				links:
-						- mysql
-				restart: always
-
-			
-				
-
+#Networks
+networks:
+  inception: 
