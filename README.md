@@ -12,8 +12,11 @@ In this project I will build a multi-container WordPress installation. My contai
 
 <img width="314" alt="Screenshot 2022-11-23 at 18 14 28" src="https://user-images.githubusercontent.com/85942176/203608485-4dbcbadf-83ec-4a2f-804b-fcebf4c2dd49.png">
 
+## RESULT 
+<img width="2033" alt="Screen Shot 2022-11-30 at 7 42 19 AM" src="https://user-images.githubusercontent.com/85942176/204726129-6dd6ffdf-c099-4c62-9c00-655225cfcde9.png">
 
-##USEFUL LINKS
+
+## USEFUL LINKS
 
 https://thesecmaster.com/what-is-ssl-tls-how-ssl-tls-1-2-and-tls-1-3-differ-from-each-other/
 https://kinsta.com/blog/wp-cli/
