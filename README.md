@@ -6,7 +6,7 @@ For let WordPress correctly run I used a LEMP(Linux, Nginx, MySQL, and PHP). By 
 
 In this project I will build a multi-container WordPress installation. My containers will include a MySQL database, an Nginx web server, and WordPress itself. I have also secured my installation by obtaining TLS/SSL certificates with Let’s Encrypt for the domain associated with my Wordpress site.
 
-<img width="833" alt="Screenshot 2022-11-23 at 18 07 03" src="https://user-images.githubusercontent.com/85942176/203607448-5ced4e59-570c-452d-9936-0c026f84d4e3.png">
+<img width="799" alt="example infrastructure" src="https://user-images.githubusercontent.com/85942176/204724908-74e895c0-2554-4636-be9d-e374c4d869f4.png">
 
 ## MAIN APPROACH
 
